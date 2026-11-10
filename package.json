@@ -1,0 +1,36 @@
+{
+  "name": "pushgate",
+  "version": "1.0.0",
+  "description": "Open, self-hostable lock-screen push notifications, questions, and cryptographic tool approvals for AI coding agents (Gemini CLI, Claude Code, Cursor, Codex, MCP)",
+  "type": "module",
+  "bin": {
+    "pushgate": "./bin/pushgate.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "ai-agents",
+    "human-in-the-loop",
+    "mcp",
+    "gemini-cli",
+    "claude-code",
+    "cursor",
+    "codex",
+    "ntfy",
+    "push-notifications",
+    "security"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connorodea/pushgate.git"
+  },
+  "homepage": "https://github.com/connorodea/pushgate#readme",
+  "bugs": {
+    "url": "https://github.com/connorodea/pushgate/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT"
+}
