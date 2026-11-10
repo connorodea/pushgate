@@ -7,7 +7,8 @@
     "pushgate": "./bin/pushgate.js"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "changelog": "node ./scripts/changelog.js"
   },
   "keywords": [
     "ai-agents",

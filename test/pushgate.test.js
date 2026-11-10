@@ -938,3 +938,54 @@ test('handles Unicode emoji truncation, "/" root cwd, setup topic rotation, and 
   }
 });
 
+// ─── 9. Running Changelog Tooling (scripts/changelog.js) ────────────────────
+
+test('running changelog script adds deduplicated Unreleased entries and promotes SemVer releases', async () => {
+  const { addUnreleasedEntry, promoteUnreleasedToVersion } = await import('../scripts/changelog.js');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pushgate-cl-'));
+  const clFile = path.join(tmpDir, 'CHANGELOG.md');
+
+  try {
+    fs.writeFileSync(
+      clFile,
+      [
+        '# Changelog',
+        '',
+        '## [Unreleased]',
+        '',
+        '---',
+        '',
+        '## [1.0.0] - 2026-11-09',
+        '',
+        '### Added',
+        '',
+        '- Initial release.',
+        '',
+        '[Unreleased]: https://github.com/connorodea/pushgate/compare/v1.0.0...HEAD',
+        '[1.0.0]: https://github.com/connorodea/pushgate/releases/tag/v1.0.0',
+        ''
+      ].join('\n')
+    );
+
+    assert.equal(addUnreleasedEntry(clFile, 'added', 'Support team webhook tags'), true);
+    // Duplicate entry must be ignored
+    assert.equal(addUnreleasedEntry(clFile, 'added', 'Support team webhook tags'), false);
+    assert.equal(addUnreleasedEntry(clFile, 'security', 'Harden Origin check'), true);
+
+    const mid = fs.readFileSync(clFile, 'utf-8');
+    assert.match(mid, /### Added\n\n- Support team webhook tags/);
+    assert.match(mid, /### Security\n\n- Harden Origin check/);
+
+    const rel = promoteUnreleasedToVersion(clFile, '1.1.0', '2026-11-10');
+    assert.equal(rel.version, '1.1.0');
+
+    const finalRaw = fs.readFileSync(clFile, 'utf-8');
+    assert.match(finalRaw, /## \[Unreleased\]\n\n---\n\n## \[1\.1\.0\] - 2026-11-10/);
+    assert.match(finalRaw, /\[Unreleased\]: https:\/\/github\.com\/connorodea\/pushgate\/compare\/v1\.1\.0\.\.\.HEAD/);
+    assert.match(finalRaw, /\[1\.1\.0\]: https:\/\/github\.com\/connorodea\/pushgate\/compare\/v1\.0\.0\.\.\.v1\.1\.0/);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+

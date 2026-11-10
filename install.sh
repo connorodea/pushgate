@@ -23,10 +23,11 @@ fi
 # 2. Copy files if installing into a custom target directory
 if [ "$INSTALL_DIR" != "$SCRIPT_DIR" ]; then
   echo "📁 Installing Pushgate into: $INSTALL_DIR"
-  mkdir -p "$INSTALL_DIR/bin" "$INSTALL_DIR/src"
-  cp "$SCRIPT_DIR/package.json" "$SCRIPT_DIR/README.md" "$INSTALL_DIR/"
+  mkdir -p "$INSTALL_DIR/bin" "$INSTALL_DIR/src" "$INSTALL_DIR/scripts"
+  cp "$SCRIPT_DIR/package.json" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/CHANGELOG.md" "$SCRIPT_DIR/LICENSE" "$INSTALL_DIR/" 2>/dev/null || cp "$SCRIPT_DIR/package.json" "$SCRIPT_DIR/README.md" "$INSTALL_DIR/"
   cp "$SCRIPT_DIR/bin/pushgate.js" "$INSTALL_DIR/bin/pushgate.js"
   cp "$SCRIPT_DIR/src/"*.js "$INSTALL_DIR/src/"
+  cp "$SCRIPT_DIR/scripts/"*.js "$INSTALL_DIR/scripts/" 2>/dev/null || true
 fi
 
 chmod +x "$INSTALL_DIR/bin/pushgate.js"
